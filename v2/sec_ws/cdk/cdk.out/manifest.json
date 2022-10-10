@@ -1,0 +1,316 @@
+{
+  "version": "19.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "gg-accel-sec-ws.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "gg-accel-sec-ws.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "gg-accel-sec-ws": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://427634861128/us-east-1",
+      "properties": {
+        "templateFile": "gg-accel-sec-ws.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::427634861128:role/cdk-hnb659fds-deploy-role-427634861128-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::427634861128:role/cdk-hnb659fds-cfn-exec-role-427634861128-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-427634861128-us-east-1/981b608c5bcb0c51bf2817d7c95ed165e4e5d969751e33f97f202fad42fe82dd.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "gg-accel-sec-ws.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::427634861128:role/cdk-hnb659fds-lookup-role-427634861128-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "gg-accel-sec-ws.assets"
+      ],
+      "metadata": {
+        "/gg-accel-sec-ws/SecWsIotPolicy/IotPolicyFunction/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SecWsIotPolicyIotPolicyFunction6227C969"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction-Provider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionProviderServiceRoleD9594DAB"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction-Provider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionProviderServiceRoleDefaultPolicy1422CBE0"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction-Provider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionProviderE67A5C77"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction-Provider/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionProviderLogRetentionCE1D919E"
+          }
+        ],
+        "/gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+          }
+        ],
+        "/gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+          }
+        ],
+        "/gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionframeworkonEventServiceRole0B7AC4A2"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionframeworkonEventServiceRoleDefaultPolicy20560B8F"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionframeworkonEvent7BDF2657"
+          }
+        ],
+        "/gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotPolicyFunctionframeworkonEventLogRetentionB067540F"
+          }
+        ],
+        "/gg-accel-sec-ws/SecWsPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SecWsPolicyC1C59BA8"
+          }
+        ],
+        "/gg-accel-sec-ws/DeploymentGroup/IotThingGroupFunction/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploymentGroupIotThingGroupFunction2BDAA428"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction-Provider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionProviderServiceRoleB44CFA5C"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction-Provider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionProviderServiceRoleDefaultPolicy0294173A"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction-Provider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionProvider8925951D"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction-Provider/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionProviderLogRetention056F09C9"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionframeworkonEventServiceRole273F8275"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionframeworkonEventServiceRoleDefaultPolicyB32E0659"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionframeworkonEvent2B648E79"
+          }
+        ],
+        "/gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IotThingGroupFunctionframeworkonEventLogRetentionD7EDD828"
+          }
+        ],
+        "/gg-accel-sec-ws/secWsComponent/GreengrassV2ComponentFunction/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "secWsComponentGreengrassV2ComponentFunction74CFC443"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionProviderServiceRoleD6AA2ED0"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionProviderServiceRoleDefaultPolicy60BF47E4"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionProvider489E0FB2"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionProviderLogRetention4D1F8897"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionframeworkonEventServiceRole6DA86460"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionframeworkonEventServiceRoleDefaultPolicyF4135ACB"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionframeworkonEvent4149D166"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2ComponentFunctionframeworkonEventLogRetentionD35FA0B1"
+          }
+        ],
+        "/gg-accel-sec-ws/SecWsGreengrassDeployment/GreengrassV2DeploymentFunction/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SecWsGreengrassDeploymentGreengrassV2DeploymentFunction38003679"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionProviderServiceRole76381BC8"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionProviderServiceRoleDefaultPolicy60CA9246"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionProviderC2AEC751"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionProviderLogRetention3AC837A6"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionframeworkonEventServiceRole50EA02C1"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionframeworkonEventServiceRoleDefaultPolicyADE04206"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionframeworkonEvent67B25013"
+          }
+        ],
+        "/gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GreengrassV2DeploymentFunctionframeworkonEventLogRetention5653D2A5"
+          }
+        ],
+        "/gg-accel-sec-ws/RequestTopic": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RequestTopic"
+          }
+        ],
+        "/gg-accel-sec-ws/ResponseTopic": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ResponseTopic"
+          }
+        ],
+        "/gg-accel-sec-ws/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/gg-accel-sec-ws/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/gg-accel-sec-ws/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "gg-accel-sec-ws"
+    }
+  }
+}

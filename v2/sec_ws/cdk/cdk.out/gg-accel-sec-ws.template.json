@@ -1,0 +1,1570 @@
+{
+ "Description": "Greengrass Accelerator v2 - Security Workshop Component",
+ "Resources": {
+  "SecWsIotPolicyIotPolicyFunction6227C969": {
+   "Type": "AWS::CloudFormation::CustomResource",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "IotPolicyFunctionframeworkonEvent7BDF2657",
+      "Arn"
+     ]
+    },
+    "StackName": "gg-accel-sec-ws",
+    "IotPolicy": {
+     "Fn::Join": [
+      "",
+      [
+       "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\"iot:Receive\", \"iot:Publish\"],\n      \"Resource\": [\n        \"arn:aws:iot:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":topic/",
+       {
+        "Fn::ImportValue": "gg-accel-base-ThingName"
+       },
+       "/sec_ws/*\"\n      ]\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\"iot:Subscribe\"],\n      \"Resource\": [\n        \"arn:aws:iot:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":topicfilter/",
+       {
+        "Fn::ImportValue": "gg-accel-base-ThingName"
+       },
+       "/sec_ws/*\"\n      ]\n    }\n  ]\n}"
+      ]
+     ]
+    },
+    "IoTPolicyName": "gg-accel-sec-ws-gg-accel-sec-ws-kzH8xKQc",
+    "CertificateArn": {
+     "Fn::ImportValue": "gg-accel-base-CertificateArn"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/SecWsIotPolicy/IotPolicyFunction/Default"
+   }
+  },
+  "IotPolicyFunctionProviderServiceRoleD9594DAB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction-Provider/ServiceRole/Resource"
+   }
+  },
+  "IotPolicyFunctionProviderServiceRoleDefaultPolicy1422CBE0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "iot:CreatePolicy",
+        "iot:DeletePolicy",
+        "iot:DeletePolicyVersion",
+        "iot:ListPolicyVersions",
+        "iot:ListTargetsForPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":iot:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":policy/gg-accel-sec-ws-gg-accel-sec-ws-kzH8xKQc"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "iot:AttachPolicy",
+        "iot:DetachPolicy",
+        "iot:ListAttachedPolicies",
+        "iot:UpdateCertificate"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IotPolicyFunctionProviderServiceRoleDefaultPolicy1422CBE0",
+    "Roles": [
+     {
+      "Ref": "IotPolicyFunctionProviderServiceRoleD9594DAB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction-Provider/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "IotPolicyFunctionProviderE67A5C77": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "252b207c99da72ea7ae9398a97691b0392a2a62124b60c8372d6c7e205e682a9.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "IotPolicyFunctionProviderServiceRoleD9594DAB",
+      "Arn"
+     ]
+    },
+    "Handler": "iot_policy.handler",
+    "Runtime": "python3.8",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "IotPolicyFunctionProviderServiceRoleDefaultPolicy1422CBE0",
+    "IotPolicyFunctionProviderServiceRoleD9594DAB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction-Provider/Resource",
+    "aws:asset:path": "asset.252b207c99da72ea7ae9398a97691b0392a2a62124b60c8372d6c7e205e682a9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IotPolicyFunctionProviderLogRetentionCE1D919E": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "IotPolicyFunctionProviderE67A5C77"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction-Provider/LogRetention/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x",
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "e5032a7ed03a7762b99560439c17f58d046a35d40ebf64ba70c63157df388563.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+    "aws:asset:path": "asset.e5032a7ed03a7762b99560439c17f58d046a35d40ebf64ba70c63157df388563",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IotPolicyFunctionframeworkonEventServiceRole0B7AC4A2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/ServiceRole/Resource"
+   }
+  },
+  "IotPolicyFunctionframeworkonEventServiceRoleDefaultPolicy20560B8F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "IotPolicyFunctionProviderE67A5C77",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "IotPolicyFunctionProviderE67A5C77",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IotPolicyFunctionframeworkonEventServiceRoleDefaultPolicy20560B8F",
+    "Roles": [
+     {
+      "Ref": "IotPolicyFunctionframeworkonEventServiceRole0B7AC4A2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "IotPolicyFunctionframeworkonEvent7BDF2657": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "IotPolicyFunctionframeworkonEventServiceRole0B7AC4A2",
+      "Arn"
+     ]
+    },
+    "Description": "AWS CDK resource provider framework - onEvent (gg-accel-sec-ws/IotPolicyFunction)",
+    "Environment": {
+     "Variables": {
+      "USER_ON_EVENT_FUNCTION_ARN": {
+       "Fn::GetAtt": [
+        "IotPolicyFunctionProviderE67A5C77",
+        "Arn"
+       ]
+      }
+     }
+    },
+    "Handler": "framework.onEvent",
+    "Runtime": "nodejs12.x",
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "IotPolicyFunctionframeworkonEventServiceRoleDefaultPolicy20560B8F",
+    "IotPolicyFunctionframeworkonEventServiceRole0B7AC4A2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/Resource",
+    "aws:asset:path": "asset.eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IotPolicyFunctionframeworkonEventLogRetentionB067540F": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "IotPolicyFunctionframeworkonEvent7BDF2657"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotPolicyFunction/framework-onEvent/LogRetention/Resource"
+   }
+  },
+  "SecWsPolicyC1C59BA8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:*:*:*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "secWsAccelerator",
+    "Roles": [
+     {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::Split": [
+         "/",
+         {
+          "Fn::Select": [
+           5,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::ImportValue": "gg-accel-base-IamRoleArn"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/SecWsPolicy/Resource"
+   }
+  },
+  "DeploymentGroupIotThingGroupFunction2BDAA428": {
+   "Type": "AWS::CloudFormation::CustomResource",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "IotThingGroupFunctionframeworkonEvent2B648E79",
+      "Arn"
+     ]
+    },
+    "StackName": "gg-accel-sec-ws",
+    "ThingGroupName": "gg-accel-sec-ws-deployment-group-kzH8xKQc",
+    "ThingGroupDescription": "CloudFormation generated group",
+    "ThingArnList": [
+     {
+      "Fn::ImportValue": "gg-accel-base-ThingArn"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/DeploymentGroup/IotThingGroupFunction/Default"
+   }
+  },
+  "IotThingGroupFunctionProviderServiceRoleB44CFA5C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction-Provider/ServiceRole/Resource"
+   }
+  },
+  "IotThingGroupFunctionProviderServiceRoleDefaultPolicy0294173A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "iot:CreateThingGroup",
+        "iot:DeleteThingGroup"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":iot:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":thinggroup/gg-accel-sec-ws-deployment-group-kzH8xKQc"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "iot:AddThingToThingGroup",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IotThingGroupFunctionProviderServiceRoleDefaultPolicy0294173A",
+    "Roles": [
+     {
+      "Ref": "IotThingGroupFunctionProviderServiceRoleB44CFA5C"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction-Provider/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "IotThingGroupFunctionProvider8925951D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "cba1c2e3b98f7487ebe66908a1c38c4158ec8fa2a632aca3e5f4826d77ba11ca.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "IotThingGroupFunctionProviderServiceRoleB44CFA5C",
+      "Arn"
+     ]
+    },
+    "Handler": "thing_group.handler",
+    "Runtime": "python3.8",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "IotThingGroupFunctionProviderServiceRoleDefaultPolicy0294173A",
+    "IotThingGroupFunctionProviderServiceRoleB44CFA5C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction-Provider/Resource",
+    "aws:asset:path": "asset.cba1c2e3b98f7487ebe66908a1c38c4158ec8fa2a632aca3e5f4826d77ba11ca",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IotThingGroupFunctionProviderLogRetention056F09C9": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "IotThingGroupFunctionProvider8925951D"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction-Provider/LogRetention/Resource"
+   }
+  },
+  "IotThingGroupFunctionframeworkonEventServiceRole273F8275": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/ServiceRole/Resource"
+   }
+  },
+  "IotThingGroupFunctionframeworkonEventServiceRoleDefaultPolicyB32E0659": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "IotThingGroupFunctionProvider8925951D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "IotThingGroupFunctionProvider8925951D",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IotThingGroupFunctionframeworkonEventServiceRoleDefaultPolicyB32E0659",
+    "Roles": [
+     {
+      "Ref": "IotThingGroupFunctionframeworkonEventServiceRole273F8275"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "IotThingGroupFunctionframeworkonEvent2B648E79": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "IotThingGroupFunctionframeworkonEventServiceRole273F8275",
+      "Arn"
+     ]
+    },
+    "Description": "AWS CDK resource provider framework - onEvent (gg-accel-sec-ws/IotThingGroupFunction)",
+    "Environment": {
+     "Variables": {
+      "USER_ON_EVENT_FUNCTION_ARN": {
+       "Fn::GetAtt": [
+        "IotThingGroupFunctionProvider8925951D",
+        "Arn"
+       ]
+      }
+     }
+    },
+    "Handler": "framework.onEvent",
+    "Runtime": "nodejs12.x",
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "IotThingGroupFunctionframeworkonEventServiceRoleDefaultPolicyB32E0659",
+    "IotThingGroupFunctionframeworkonEventServiceRole273F8275"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/Resource",
+    "aws:asset:path": "asset.eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "IotThingGroupFunctionframeworkonEventLogRetentionD7EDD828": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "IotThingGroupFunctionframeworkonEvent2B648E79"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/IotThingGroupFunction/framework-onEvent/LogRetention/Resource"
+   }
+  },
+  "secWsComponentGreengrassV2ComponentFunction74CFC443": {
+   "Type": "AWS::CloudFormation::CustomResource",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "GreengrassV2ComponentFunctionframeworkonEvent4149D166",
+      "Arn"
+     ]
+    },
+    "StackName": "gg-accel-sec-ws",
+    "AssetBucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+    "ComponentZipAsset": "c7308417cb7560d599e29c5af614eb558f469caf07c493c62a453687d3ee0c0a.zip",
+    "ComponentPrefixPath": "ggAccel.sec_ws/1.0.0/",
+    "RecipeFileAsset": "dbd0a2cfcea51fea49bab3be307b090f70007f5c8b45d12cc9db2fac4aaae2ba.yaml",
+    "ComponentName": "ggAccel.sec_ws",
+    "ComponentVersion": "1.0.0",
+    "TargetBucket": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::Split": [
+        "/",
+        {
+         "Fn::Select": [
+          5,
+          {
+           "Fn::Split": [
+            ":",
+            {
+             "Fn::ImportValue": "gg-accel-base-ComponentBucketArn"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    "TargetArtifactKeyName": "ggAccel.sec_ws.zip"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/secWsComponent/GreengrassV2ComponentFunction/Default"
+   }
+  },
+  "GreengrassV2ComponentFunctionProviderServiceRoleD6AA2ED0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/ServiceRole/Resource"
+   }
+  },
+  "GreengrassV2ComponentFunctionProviderServiceRoleDefaultPolicy60BF47E4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::Select": [
+             0,
+             {
+              "Fn::Split": [
+               "/",
+               {
+                "Fn::Select": [
+                 5,
+                 {
+                  "Fn::Split": [
+                   ":",
+                   {
+                    "Fn::ImportValue": "gg-accel-base-ComponentBucketArn"
+                   }
+                  ]
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::cdk-hnb659fds-assets-427634861128-us-east-1/c7308417cb7560d599e29c5af614eb558f469caf07c493c62a453687d3ee0c0a.zip",
+        "arn:aws:s3:::cdk-hnb659fds-assets-427634861128-us-east-1/dbd0a2cfcea51fea49bab3be307b090f70007f5c8b45d12cc9db2fac4aaae2ba.yaml"
+       ]
+      },
+      {
+       "Action": "greengrass:CreateComponentVersion",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":greengrass:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":components:ggAccel.sec_ws"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "greengrass:DeleteComponent",
+        "greengrass:DescribeComponent"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":greengrass:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":components:ggAccel.sec_ws:versions:1.0.0"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "iot:AddThingToThingGroup",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GreengrassV2ComponentFunctionProviderServiceRoleDefaultPolicy60BF47E4",
+    "Roles": [
+     {
+      "Ref": "GreengrassV2ComponentFunctionProviderServiceRoleD6AA2ED0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GreengrassV2ComponentFunctionProvider489E0FB2": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "0e6ee77bed23967381a5256407957d9eb6ba6d96d18b43757d1790471f19beed.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "GreengrassV2ComponentFunctionProviderServiceRoleD6AA2ED0",
+      "Arn"
+     ]
+    },
+    "Handler": "create_component_version.handler",
+    "Runtime": "python3.8",
+    "Timeout": 600
+   },
+   "DependsOn": [
+    "GreengrassV2ComponentFunctionProviderServiceRoleDefaultPolicy60BF47E4",
+    "GreengrassV2ComponentFunctionProviderServiceRoleD6AA2ED0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/Resource",
+    "aws:asset:path": "asset.0e6ee77bed23967381a5256407957d9eb6ba6d96d18b43757d1790471f19beed",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GreengrassV2ComponentFunctionProviderLogRetention4D1F8897": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GreengrassV2ComponentFunctionProvider489E0FB2"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction-Provider/LogRetention/Resource"
+   }
+  },
+  "GreengrassV2ComponentFunctionframeworkonEventServiceRole6DA86460": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/ServiceRole/Resource"
+   }
+  },
+  "GreengrassV2ComponentFunctionframeworkonEventServiceRoleDefaultPolicyF4135ACB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "GreengrassV2ComponentFunctionProvider489E0FB2",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "GreengrassV2ComponentFunctionProvider489E0FB2",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GreengrassV2ComponentFunctionframeworkonEventServiceRoleDefaultPolicyF4135ACB",
+    "Roles": [
+     {
+      "Ref": "GreengrassV2ComponentFunctionframeworkonEventServiceRole6DA86460"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GreengrassV2ComponentFunctionframeworkonEvent4149D166": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "GreengrassV2ComponentFunctionframeworkonEventServiceRole6DA86460",
+      "Arn"
+     ]
+    },
+    "Description": "AWS CDK resource provider framework - onEvent (gg-accel-sec-ws/GreengrassV2ComponentFunction)",
+    "Environment": {
+     "Variables": {
+      "USER_ON_EVENT_FUNCTION_ARN": {
+       "Fn::GetAtt": [
+        "GreengrassV2ComponentFunctionProvider489E0FB2",
+        "Arn"
+       ]
+      }
+     }
+    },
+    "Handler": "framework.onEvent",
+    "Runtime": "nodejs12.x",
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "GreengrassV2ComponentFunctionframeworkonEventServiceRoleDefaultPolicyF4135ACB",
+    "GreengrassV2ComponentFunctionframeworkonEventServiceRole6DA86460"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/Resource",
+    "aws:asset:path": "asset.eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GreengrassV2ComponentFunctionframeworkonEventLogRetentionD35FA0B1": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GreengrassV2ComponentFunctionframeworkonEvent4149D166"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2ComponentFunction/framework-onEvent/LogRetention/Resource"
+   }
+  },
+  "SecWsGreengrassDeploymentGreengrassV2DeploymentFunction38003679": {
+   "Type": "AWS::CloudFormation::CustomResource",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "GreengrassV2DeploymentFunctionframeworkonEvent67B25013",
+      "Arn"
+     ]
+    },
+    "StackName": "gg-accel-sec-ws",
+    "TargetArn": {
+     "Fn::GetAtt": [
+      "DeploymentGroupIotThingGroupFunction2BDAA428",
+      "ThingGroupArn"
+     ]
+    },
+    "DeploymentName": "gg-accel-sec-ws - operating system sec workshop deployment",
+    "Components": {
+     "ggAccel.sec_ws": {
+      "componentVersion": "1.0.0"
+     }
+    },
+    "IotJobExecution": {},
+    "DeploymentPolicies": {},
+    "Tags": {}
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/SecWsGreengrassDeployment/GreengrassV2DeploymentFunction/Default"
+   }
+  },
+  "GreengrassV2DeploymentFunctionProviderServiceRole76381BC8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/ServiceRole/Resource"
+   }
+  },
+  "GreengrassV2DeploymentFunctionProviderServiceRoleDefaultPolicy60CA9246": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "greengrass:CancelDeployment",
+        "greengrass:CreateDeployment",
+        "iot:CancelJob",
+        "iot:CreateJob",
+        "iot:DeleteThingShadow",
+        "iot:DescribeJob",
+        "iot:DescribeThing",
+        "iot:DescribeThingGroup",
+        "iot:GetThingShadow",
+        "iot:UpdateJob",
+        "iot:UpdateThingShadow"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GreengrassV2DeploymentFunctionProviderServiceRoleDefaultPolicy60CA9246",
+    "Roles": [
+     {
+      "Ref": "GreengrassV2DeploymentFunctionProviderServiceRole76381BC8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GreengrassV2DeploymentFunctionProviderC2AEC751": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "8f37ebae054095b91835e7a8e2e39cc541ac7b0e96b44951599a7faadf74f08f.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "GreengrassV2DeploymentFunctionProviderServiceRole76381BC8",
+      "Arn"
+     ]
+    },
+    "Handler": "create_deployment.handler",
+    "Runtime": "python3.8",
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "GreengrassV2DeploymentFunctionProviderServiceRoleDefaultPolicy60CA9246",
+    "GreengrassV2DeploymentFunctionProviderServiceRole76381BC8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/Resource",
+    "aws:asset:path": "asset.8f37ebae054095b91835e7a8e2e39cc541ac7b0e96b44951599a7faadf74f08f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GreengrassV2DeploymentFunctionProviderLogRetention3AC837A6": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GreengrassV2DeploymentFunctionProviderC2AEC751"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction-Provider/LogRetention/Resource"
+   }
+  },
+  "GreengrassV2DeploymentFunctionframeworkonEventServiceRole50EA02C1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/ServiceRole/Resource"
+   }
+  },
+  "GreengrassV2DeploymentFunctionframeworkonEventServiceRoleDefaultPolicyADE04206": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "GreengrassV2DeploymentFunctionProviderC2AEC751",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "GreengrassV2DeploymentFunctionProviderC2AEC751",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GreengrassV2DeploymentFunctionframeworkonEventServiceRoleDefaultPolicyADE04206",
+    "Roles": [
+     {
+      "Ref": "GreengrassV2DeploymentFunctionframeworkonEventServiceRole50EA02C1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GreengrassV2DeploymentFunctionframeworkonEvent67B25013": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-427634861128-us-east-1",
+     "S3Key": "eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "GreengrassV2DeploymentFunctionframeworkonEventServiceRole50EA02C1",
+      "Arn"
+     ]
+    },
+    "Description": "AWS CDK resource provider framework - onEvent (gg-accel-sec-ws/GreengrassV2DeploymentFunction)",
+    "Environment": {
+     "Variables": {
+      "USER_ON_EVENT_FUNCTION_ARN": {
+       "Fn::GetAtt": [
+        "GreengrassV2DeploymentFunctionProviderC2AEC751",
+        "Arn"
+       ]
+      }
+     }
+    },
+    "Handler": "framework.onEvent",
+    "Runtime": "nodejs12.x",
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "GreengrassV2DeploymentFunctionframeworkonEventServiceRoleDefaultPolicyADE04206",
+    "GreengrassV2DeploymentFunctionframeworkonEventServiceRole50EA02C1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/Resource",
+    "aws:asset:path": "asset.eaeb69bc290b516fe3b049f89d6118b22249df682fbabf56af300cf345198574",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GreengrassV2DeploymentFunctionframeworkonEventLogRetention5653D2A5": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "GreengrassV2DeploymentFunctionframeworkonEvent67B25013"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/GreengrassV2DeploymentFunction/framework-onEvent/LogRetention/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/0VPQW7DIBB8S+6wcVNFyrFNpJ4q1XIeYBFMHWLMWiykipD/XjBuepoZaXZ2Zge7PcRqI36Iy27gRl8gnr2QAzsF8jg2ijA4qdjp2z55crfRiPHSCYgfwUqv0WbHH5+ZFiPEBk05zFij0fKRZWEzo9dWEClP8J4haTgGOSh/FKSYwZ7gE/tGeWVL6GJL7Xpte/ZsI5eirVs1Qe3wrjvl8q+v4KfgZ1ZxYaargGrztm7dZiwj+PTwV7SrpV7E/xSLnYIbbe8vBzikgBtpzV1InUYFTcFfnVumZEgBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "gg-accel-sec-ws/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "RequestTopic": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::ImportValue": "gg-accel-base-ThingName"
+      },
+      "/sec_ws/request"
+     ]
+    ]
+   }
+  },
+  "ResponseTopic": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::ImportValue": "gg-accel-base-ThingName"
+      },
+      "/sec_ws/response"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
